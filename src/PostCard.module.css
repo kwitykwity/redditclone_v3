@@ -1,0 +1,146 @@
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  margin-bottom: 10px;
+  padding: 14px 16px 10px;
+  transition: border-color 0.15s;
+}
+.card:hover { border-color: var(--border2); }
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--surface3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.author { font-size: 12px; font-weight: 600; color: var(--text); }
+.dot { color: var(--text3); font-size: 10px; }
+.time { font-size: 12px; color: var(--text2); }
+.moreBtn {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: var(--text3);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: var(--radius);
+  letter-spacing: 1px;
+}
+.moreBtn:hover { background: var(--surface2); color: var(--text); }
+
+.body { margin-bottom: 10px; }
+.flairWrap { margin-bottom: 6px; }
+.flair {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  border: 1px solid;
+  letter-spacing: 0.03em;
+}
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+.bodyText {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.voteRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface2);
+  border-radius: 20px;
+  padding: 4px 10px;
+}
+.voteBtn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: var(--text2);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  font-weight: 700;
+  transition: color 0.1s;
+}
+.voteBtn:hover { color: var(--vote-up); }
+.voteBtn:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+.downBtn:hover { color: var(--vote-down); }
+.votedUp { color: var(--vote-up) !important; }
+.votedDown { color: var(--vote-down) !important; }
+.voteCount { font-size: 13px; font-weight: 700; color: var(--text); min-width: 36px; text-align: center; }
+.countUp { color: var(--vote-up); }
+.countDown { color: var(--vote-down); }
+
+.actionBtn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--surface2);
+  border: none;
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text2);
+  cursor: pointer;
+  transition: background 0.1s, color 0.1s;
+}
+.actionBtn:hover { background: var(--surface3); color: var(--text); }
+.actionBtn:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.title { cursor: pointer; }
+.title:hover { color: var(--blue); }
+.title:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+.bodyText { cursor: pointer; }
+.bodyText:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+.moreBtn:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+

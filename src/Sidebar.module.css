@@ -1,0 +1,108 @@
+.sidebar { width: 312px; flex-shrink: 0; }
+
+.communityCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px;
+  margin-bottom: 12px;
+}
+.cardTitle { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+.desc { font-size: 12px; color: var(--text2); line-height: 1.6; margin-bottom: 12px; }
+.stats {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+.stat { flex: 1; padding: 10px 12px; border-right: 1px solid var(--border); }
+.stat:last-child { border-right: none; }
+.statNum { font-size: 16px; font-weight: 700; color: var(--text); }
+.statLabel { font-size: 11px; color: var(--text2); margin-top: 2px; }
+.meta { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--text2); margin-bottom: 12px; }
+.guideBtn {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-lg);
+  padding: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+.guideBtn:hover { background: var(--surface3); }
+.joinBtn {
+  width: 100%;
+  background: var(--blue);
+  color: #0a1a20;
+  border: none;
+  border-radius: var(--radius-lg);
+  padding: 9px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+.joinBtn:hover { background: var(--blue2); }
+.createBtn {
+  width: 100%;
+  background: transparent;
+  color: var(--blue);
+  border: 1px solid var(--blue);
+  border-radius: var(--radius-lg);
+  padding: 9px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.createBtn:hover { background: #0e2a3a; }
+
+.rulesCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px;
+  margin-bottom: 12px;
+}
+.rulesTitle { font-size: 11px; font-weight: 700; color: var(--text2); letter-spacing: 0.06em; margin-bottom: 10px; }
+.rule {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+}
+.rule:last-child { border-bottom: none; }
+.rule:hover .ruleText { color: var(--text); }
+.ruleNum {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text2);
+  width: 18px;
+  flex-shrink: 0;
+}
+.ruleText { flex: 1; font-size: 13px; color: var(--text2); }
+.ruleChevron { font-size: 11px; color: var(--text3); }
+
+.legendCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px;
+}
+.legendTitle { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+.legendItem { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 12px; color: var(--text2); }
+.legendDot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+/* Keyboard accessibility: focus-visible outlines */
+.guideBtn:focus-visible,
+.joinBtn:focus-visible,
+.createBtn:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}

@@ -1,0 +1,118 @@
+.nav {
+  width: 270px;
+  flex-shrink: 0;
+  overflow-y: auto;
+  height: calc(100vh - 48px);
+  position: sticky;
+  top: 48px;
+  border-right: 1px solid var(--border);
+  background: var(--surface);
+  padding-bottom: 20px;
+}
+
+.section { padding: 4px 0; }
+
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0;
+}
+
+.sectionLabel {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text3);
+  letter-spacing: 0.08em;
+  padding: 10px 16px 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.collapseBtn {
+  background: none;
+  border: none;
+  color: var(--text3);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  font-size: 14px;
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.1s;
+  position: relative;
+}
+.item:hover { background: var(--surface2); }
+
+.active { background: var(--surface2); }
+.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--brand);
+  border-radius: 0 2px 2px 0;
+}
+
+.icon { font-size: 18px; flex-shrink: 0; width: 24px; text-align: center; }
+.plus { font-size: 18px; color: var(--blue); font-weight: 300; width: 24px; text-align: center; }
+.star { margin-left: auto; font-size: 12px; color: var(--text3); }
+
+.gameCard {
+  margin: 4px 10px 8px;
+  background: var(--surface2);
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  gap: 10px;
+  cursor: pointer;
+}
+.gameCard:hover { background: var(--surface3); }
+
+.gameIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: #4a90d9;
+  color: white;
+  font-size: 18px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.gameInfo { flex: 1; min-width: 0; }
+.gameName {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.newBadge {
+  background: var(--brand);
+  color: white;
+  font-size: 9px;
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+.gameSub { font-size: 11px; color: var(--text2); margin-top: 2px; }
+.gamePlayers { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+/* Keyboard accessibility: focus-visible outlines */
+.collapseBtn:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}

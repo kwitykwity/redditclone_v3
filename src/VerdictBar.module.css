@@ -1,0 +1,46 @@
+.wrap {
+  margin: 8px 0;
+}
+
+.bar {
+  display: flex;
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.seg {
+  height: 100%;
+}
+
+.seg.nta { background: #46d160; }
+.seg.yta { background: #ff6b6b; }
+.seg.esh { background: #ffd166; }
+.seg.nah { background: #4fbdba; }
+
+.labels {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 11px;
+  color: var(--text2);
+}
+
+.labels span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot.nta { background: #46d160; }
+.dot.yta { background: #ff6b6b; }
+.dot.esh { background: #ffd166; }
+.dot.nah { background: #4fbdba; }
