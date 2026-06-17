@@ -72,6 +72,7 @@
 .takeoverText { font-size: 13px; color: var(--text); }
 .takeoverRight { display: flex; align-items: center; gap: 8px; }
 .takeoverCta {
+  display: inline-block;
   background: var(--brand);
   color: white;
   border: none;
@@ -81,8 +82,9 @@
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
+  text-decoration: none;
 }
-.takeoverCta:hover { background: var(--brand2); }
+.takeoverCta:hover { background: var(--brand2); text-decoration: none; }
 .dismissX {
   background: none;
   border: none;
@@ -120,6 +122,7 @@
 .bannerHeadline { font-size: 14px; font-weight: 600; color: var(--text); }
 .bannerSub { font-size: 12px; color: var(--text2); margin-top: 2px; }
 .bannerCta {
+  display: inline-block;
   background: #0079d3;
   color: white;
   border: none;
@@ -129,8 +132,9 @@
   font-weight: 700;
   cursor: pointer;
   flex-shrink: 0;
+  text-decoration: none;
 }
-.bannerCta:hover { background: #006bbf; }
+.bannerCta:hover { background: #006bbf; text-decoration: none; }
 .bannerSize {
   position: absolute;
   bottom: 4px;
@@ -213,6 +217,7 @@
 }
 .nativeActions { display: flex; align-items: center; gap: 8px; }
 .nativeCta {
+  display: inline-block;
   background: var(--brand);
   color: white;
   border: none;
@@ -221,8 +226,9 @@
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
+  text-decoration: none;
 }
-.nativeCta:hover { opacity: 0.9; }
+.nativeCta:hover { opacity: 0.9; text-decoration: none; }
 .actionBtn {
   display: flex;
   align-items: center;
@@ -295,6 +301,18 @@
   cursor: pointer;
 }
 .videoContent { flex: 1; display: flex; align-items: center; justify-content: center; gap: 16px; }
+.videoLearnMore {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: white;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.videoLearnMore:hover { background: rgba(255, 255, 255, 0.25); text-decoration: none; }
 .videoFooter { padding: 8px 0 10px; }
 .skipFull {
   background: none;
@@ -345,7 +363,10 @@
 .sidebarHeadline { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
 .sidebarSub { font-size: 12px; color: var(--text2); margin-bottom: 10px; line-height: 1.4; }
 .sidebarBtn {
+  display: block;
   width: 100%;
+  box-sizing: border-box;
+  text-align: center;
   background: #0079d3;
   color: white;
   border: none;
@@ -354,8 +375,9 @@
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
+  text-decoration: none;
 }
-.sidebarBtn:hover { background: #006bbf; }
+.sidebarBtn:hover { background: #006bbf; text-decoration: none; }
 .sidebarAdMeta { display: flex; align-items: center; gap: 6px; padding: 2px 0; }
 
 /* Keyboard accessibility */

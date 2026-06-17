@@ -31,7 +31,14 @@ export function TakeoverAd({ visible }) {
           </span>
         </div>
         <div className={styles.takeoverRight}>
-          <button className={styles.takeoverCta}>Try now →</button>
+          <a
+            className={styles.takeoverCta}
+            href="https://www.betterhelp.com"
+            target="_blank"
+            rel="noopener noreferrer sponsored"
+          >
+            Try now →
+          </a>
           <button className={styles.dismissX} onClick={() => setDismissed(true)}>✕</button>
         </div>
       </div>
@@ -52,11 +59,18 @@ export function BannerAd({ visible }) {
         <div className={styles.bannerLeft}>
           <div className={styles.bannerIcon}>💳</div>
           <div>
-            <div className={styles.bannerHeadline}>Mint — Build credit while you spend</div>
+            <div className={styles.bannerHeadline}>Credit Karma — Build credit while you spend</div>
             <div className={styles.bannerSub}>No annual fee. Apply in 2 minutes. No credit check required.</div>
           </div>
         </div>
-        <button className={styles.bannerCta}>Apply Now</button>
+        <a
+          className={styles.bannerCta}
+          href="https://www.creditkarma.com"
+          target="_blank"
+          rel="noopener noreferrer sponsored"
+        >
+          Apply Now
+        </a>
       </div>
       <AdLabel
         type="Banner / Display Ad"
@@ -84,7 +98,14 @@ export function NativeAd({ visible }) {
           <p className={styles.nativeText}>Thousands of learners have landed jobs in AI, data science, and software engineering — starting from zero. Most began with one free course. See what made the difference.</p>
         </div>
         <div className={styles.nativeActions}>
-          <button className={styles.nativeCta}>Enroll free →</button>
+          <a
+            className={styles.nativeCta}
+            href="https://www.coursera.org"
+            target="_blank"
+            rel="noopener noreferrer sponsored"
+          >
+            Start free trial →
+          </a>
           <button className={styles.actionBtn}>💬 243</button>
           <button className={styles.actionBtn}>↗ Share</button>
         </div>
@@ -152,7 +173,17 @@ export function VideoAd({ visible }) {
               </div>
               <div className={styles.videoContent}>
                 <span style={{ fontSize: 40 }}>💊</span>
-                <p style={{ color: 'white', fontWeight: 600, fontSize: 15 }}>Personalized care, delivered to your door.</p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-start' }}>
+                  <p style={{ color: 'white', fontWeight: 600, fontSize: 15, margin: 0 }}>Personalized care, delivered to your door.</p>
+                  <a
+                    href="https://www.hims.com"
+                    target="_blank"
+                    rel="noopener noreferrer sponsored"
+                    className={styles.videoLearnMore}
+                  >
+                    Learn more →
+                  </a>
+                </div>
               </div>
             </div>
           )}
@@ -189,7 +220,15 @@ export function PromotedPostAd({ visible }) {
           <p className={styles.nativeText}>Turns out it wasn't updating their resume or applying to hundreds of jobs. The single biggest factor? Building a strong LinkedIn presence before they needed it.</p>
         </div>
         <div className={styles.nativeActions}>
-          <button className={styles.nativeCta} style={{background:'#0a66c2'}}>See how →</button>
+          <a
+            className={styles.nativeCta}
+            style={{background:'#0a66c2'}}
+            href="https://www.linkedin.com"
+            target="_blank"
+            rel="noopener noreferrer sponsored"
+          >
+            See how →
+          </a>
           <button className={styles.actionBtn}>💬 412</button>
           <button className={styles.actionBtn}>↗ Share</button>
         </div>
@@ -215,7 +254,14 @@ export function SidebarAd({ visible }) {
         </div>
         <div className={styles.sidebarHeadline}>Stay private online</div>
         <div className={styles.sidebarSub}>68% off + 3 months free. Limited time offer.</div>
-        <button className={styles.sidebarBtn}>Get the deal</button>
+        <a
+          className={styles.sidebarBtn}
+          href="https://nordvpn.com"
+          target="_blank"
+          rel="noopener noreferrer sponsored"
+        >
+          Get the deal
+        </a>
       </div>
       <div className={styles.sidebarAdMeta}>
         <span className={styles.adPill}>AD</span>
