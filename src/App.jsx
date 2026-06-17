@@ -10,13 +10,6 @@ import { TakeoverAd, BannerAd, NativeAd, VideoAd, PromotedPostAd } from './AdUni
 import { POSTS } from './data.js'
 import styles from './App.module.css'
 
-const PROMOTED_POST = {
-  id: 99, author: 'Omvoh', avatar: '💬', flair: 'NTA',
-  title: "Don't leave this message on read. Talk to your doctor and have the Omvoh Convo today.",
-  body: "Starting a conversation about your health can feel awkward. Omvoh helps you find the words.",
-  votes: 0, comments: 0,
-}
-
 const DEFAULT_ADS = {
   takeover: false, banner: false, native: false,
   video: false, promoted: false, sidebar: false,
@@ -34,15 +27,57 @@ function sortPosts(posts, sort) {
   }
 }
 
-function Feed({ ads }) {
+function filterPosts(posts, query) {
+  const q = query.trim().toLowerCase()
+  if (!q) return posts
+  return posts.filter(p =>
+    p.title.toLowerCase().includes(q) || p.body.toLowerCase().includes(q)
+  )
+}
+
+const AD_SLOTS = [
+  { beforeIndex: 0, Component: TakeoverAd, adKey: 'takeover' },
+  { beforeIndex: 1, Component: BannerAd, adKey: 'banner' },
+  { beforeIndex: 2, Component: NativeAd, adKey: 'native' },
+  { beforeIndex: 3, Component: VideoAd, adKey: 'video' },
+  { beforeIndex: 4, Component: PromotedPostAd, adKey: 'promoted' },
+  { beforeIndex: 5, Component: BannerAd, adKey: 'banner' },
+  { beforeIndex: 6, Component: NativeAd, adKey: 'native' },
+]
+
+function renderFeedWithAds(posts, ads) {
+  const elements = []
+  posts.forEach((post, i) => {
+    const slot = AD_SLOTS.find(s => s.beforeIndex === i)
+    if (slot) {
+      const { Component, adKey } = slot
+      elements.push(<Component key={`ad-${adKey}-${i}`} visible={ads[adKey]} />)
+    }
+    elements.push(<PostCard key={post.id} post={post} />)
+  })
+  return elements
+}
+
+function Feed({ ads, searchQuery }) {
   const [sort, setSort] = useState('Best')
-  const sortedPosts = sortPosts(POSTS, sort)
+  const trimmedQuery = searchQuery.trim()
+  const filteredPosts = filterPosts(POSTS, searchQuery)
+  const sortedPosts = sortPosts(filteredPosts, sort)
+  const isFiltering = trimmedQuery.length > 0
 
   return (
     <main className={styles.main}>
       <SubHeader />
       <div className={styles.content}>
         <div className={styles.feed}>
+          {isFiltering && (
+            <div className={styles.searchResultsBar}>
+              {sortedPosts.length > 0
+                ? `${sortedPosts.length} result${sortedPosts.length === 1 ? '' : 's'} for "${trimmedQuery}"`
+                : `No results for "${trimmedQuery}"`}
+            </div>
+          )}
+
           <div className={styles.sortBar}>
             {SORT_OPTIONS.map(s => (
               <button
@@ -56,51 +91,50 @@ function Feed({ ads }) {
             <button className={styles.viewBtn}>⊞ ∨</button>
           </div>
 
-          <div className={styles.highlights}>
-            <div className={styles.highlightsHeader}>
-              <span>⚑</span> Community highlights
-              <button className={styles.highlightToggle}>∧</button>
-            </div>
-            <div className={styles.highlightCards}>
-              <div className={styles.highlightCard}>
-                <div className={styles.hlTitle}>New rules: Account age and karma minimums</div>
-                <div className={styles.hlMeta}>73 votes • 1 comment</div>
-                <div className={styles.hlTag}>⚑ Announcement</div>
+          {!isFiltering && (
+            <div className={styles.highlights}>
+              <div className={styles.highlightsHeader}>
+                <span>⚑</span> Community highlights
+                <button className={styles.highlightToggle}>∧</button>
               </div>
-              <div className={styles.highlightCard}>
-                <div className={styles.hlTitle}>New rule: no political trolling</div>
-                <div className={styles.hlMeta}>656 votes • 1 comment</div>
-                <div className={styles.hlTag}>⚑ Announcement</div>
+              <div className={styles.highlightCards}>
+                <div className={styles.highlightCard}>
+                  <div className={styles.hlTitle}>New rules: Account age and karma minimums</div>
+                  <div className={styles.hlMeta}>73 votes • 1 comment</div>
+                  <div className={styles.hlTag}>⚑ Announcement</div>
+                </div>
+                <div className={styles.highlightCard}>
+                  <div className={styles.hlTitle}>New rule: no political trolling</div>
+                  <div className={styles.hlMeta}>656 votes • 1 comment</div>
+                  <div className={styles.hlTag}>⚑ Announcement</div>
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
-          <TakeoverAd visible={ads.takeover} />
-          <PostCard post={sortedPosts[0]} />
-          <BannerAd visible={ads.banner} />
-          <PostCard post={sortedPosts[1]} />
-          <NativeAd visible={ads.native} />
-          <PostCard post={sortedPosts[2]} />
-          <VideoAd visible={ads.video} />
-          <PostCard post={sortedPosts[3]} />
-          {ads.promoted && <PostCard post={PROMOTED_POST} promoted />}
-          <PostCard post={sortedPosts[4]} />
-          <BannerAd visible={ads.banner} />
-          <PostCard post={sortedPosts[5]} />
-          <NativeAd visible={ads.native} />
-          <PostCard post={sortedPosts[6]} />
-          <PostCard post={sortedPosts[7]} />
+          {isFiltering ? (
+            sortedPosts.map(post => <PostCard key={post.id} post={post} />)
+          ) : (
+            renderFeedWithAds(sortedPosts, ads)
+          )}
         </div>
-        <Sidebar />
+        <Sidebar sidebarAdVisible={ads.sidebar} />
       </div>
     </main>
   )
 }
 
-function AppLayout({ theme, toggleTheme, ads, toggleAd, children }) {
+function AppLayout({ theme, toggleTheme, ads, toggleAd, searchQuery, onSearchChange, children }) {
   return (
     <div className={styles.app}>
-      <Topbar theme={theme} onToggle={toggleTheme} ads={ads} onToggleAd={toggleAd} />
+      <Topbar
+        theme={theme}
+        onToggle={toggleTheme}
+        ads={ads}
+        onToggleAd={toggleAd}
+        searchQuery={searchQuery}
+        onSearchChange={onSearchChange}
+      />
       <div className={styles.layout}>
         <LeftSidebar />
         {children}
@@ -112,6 +146,7 @@ function AppLayout({ theme, toggleTheme, ads, toggleAd, children }) {
 export default function App() {
   const [theme, setTheme] = useState('dark')
   const [ads, setAds] = useState(DEFAULT_ADS)
+  const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
@@ -122,9 +157,16 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <AppLayout theme={theme} toggleTheme={toggleTheme} ads={ads} toggleAd={toggleAd}>
+      <AppLayout
+        theme={theme}
+        toggleTheme={toggleTheme}
+        ads={ads}
+        toggleAd={toggleAd}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+      >
         <Routes>
-          <Route path="/" element={<Feed ads={ads} />} />
+          <Route path="/" element={<Feed ads={ads} searchQuery={searchQuery} />} />
           <Route path="/post/:postId" element={<ThreadView />} />
         </Routes>
       </AppLayout>

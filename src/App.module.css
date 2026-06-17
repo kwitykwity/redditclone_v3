@@ -16,6 +16,14 @@
 
 .feed { flex: 1; min-width: 0; }
 
+.searchResultsBar {
+  font-size: 14px;
+  color: var(--text2);
+  padding: 10px 4px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
 .sortBar {
   display: flex;
   align-items: center;

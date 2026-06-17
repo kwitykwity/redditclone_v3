@@ -1,3 +1,4 @@
+import { useNavigate, useLocation } from 'react-router-dom'
 import styles from './Topbar.module.css'
 
 const AD_TYPES = [
@@ -9,8 +10,27 @@ const AD_TYPES = [
   { key: 'sidebar',   label: 'Sidebar' },
 ]
 
-export default function Topbar({ theme, onToggle, ads, onToggleAd }) {
+export default function Topbar({ theme, onToggle, ads, onToggleAd, searchQuery, onSearchChange }) {
   const isDark = theme === 'dark'
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  function handleSearchKeyDown(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      if (location.pathname !== '/') navigate('/')
+    }
+    if (e.key === 'Escape') {
+      e.preventDefault()
+      onSearchChange('')
+      e.target.blur()
+    }
+  }
+
+  function clearSearch() {
+    onSearchChange('')
+  }
+
   return (
     <header className={styles.bar}>
       <div className={styles.left}>
@@ -26,9 +46,15 @@ export default function Topbar({ theme, onToggle, ads, onToggleAd }) {
           <div className={styles.searchTag}>
             <span className={styles.searchTagIcon}>⬤</span>
             r/AITAH
-            <button className={styles.searchTagX}>✕</button>
+            <button className={styles.searchTagX} onClick={clearSearch} aria-label="Clear search">✕</button>
           </div>
-          <input className={styles.searchInput} placeholder="Search in r/AITAH" />
+          <input
+            className={styles.searchInput}
+            placeholder="Search in r/AITAH"
+            value={searchQuery}
+            onChange={e => onSearchChange(e.target.value)}
+            onKeyDown={handleSearchKeyDown}
+          />
         </div>
       </div>
 

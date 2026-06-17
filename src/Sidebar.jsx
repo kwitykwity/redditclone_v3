@@ -9,7 +9,7 @@ const RULES = [
   "No doxxing or personal info",
 ]
 
-export default function Sidebar() {
+export default function Sidebar({ sidebarAdVisible }) {
   return (
     <aside className={styles.sidebar}>
       <div className={styles.communityCard}>
@@ -47,7 +47,7 @@ export default function Sidebar() {
         ))}
       </div>
 
-      <SidebarAd />
+      <SidebarAd visible={sidebarAdVisible} />
 
       <div className={styles.legendCard}>
         <div className={styles.legendTitle}>Ad types in this feed</div>
