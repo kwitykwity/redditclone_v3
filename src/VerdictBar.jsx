@@ -10,6 +10,14 @@ export default function VerdictBar({ verdict }) {
     { key: 'nah', label: 'NAH', value: verdict.nah },
   ]
 
+  const total = segments.reduce((sum, s) => sum + (s.value || 0), 0)
+  // Normalize bar widths to always sum to 100, even if the source data
+  // doesn't add up exactly (e.g. due to rounding when the data was authored).
+  // The displayed percentage labels still show the original source values,
+  // so the bar's proportions stay visually correct without silently
+  // rewriting the underlying numbers shown to the user.
+  const scale = total > 0 ? 100 / total : 0
+
   return (
     <div className={styles.wrap}>
       <div
@@ -21,7 +29,7 @@ export default function VerdictBar({ verdict }) {
           <div
             key={s.key}
             className={`${styles.seg} ${styles[s.key]}`}
-            style={{ width: `${s.value}%` }}
+            style={{ width: `${(s.value || 0) * scale}%` }}
           />
         ))}
       </div>

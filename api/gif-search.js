@@ -11,11 +11,15 @@
 // Confirmed endpoint shape (from KLIPY's GIF Search API docs):
 //   GET api/v1/{app_key}/gifs/search?page={page}&per_page={per_page}&q={q}&customer_id={customer_id}
 //
-// NOTE: The exact response object field names (the "Media Object" shape)
-// weren't directly viewable while building this -- this proxy normalizes a
-// few plausible shapes. If results come back empty despite a 200 response,
-// re-run the same request with &debug=1 to inspect the raw response and
-// adjust the field-mapping below if needed.
+// Confirmed response shape (verified via &debug=1 against a live request):
+//   { result: true, data: { data: [ { id, slug, title, file: {
+//       hd: { gif: { url, width, height, size }, webp: {...}, jpg: {...}, mp4: {...}, webm: {...} },
+//       md: { gif: {...}, webp: {...}, ... },
+//       sm: { gif: {...}, webp: {...}, ... },
+//       xs: { gif: {...}, webp: {...}, ... }
+//   }, tags: [], type: "gif", blur_preview: "data:image/jpeg;base64,..." }, ... ] } }
+// We use "md" (medium) for the full GIF and "xs" (extra-small) as the
+// lightweight grid preview thumbnail.
 
 export default async function handler(req, res) {
   const { q, debug } = req.query
@@ -50,22 +54,15 @@ export default async function handler(req, res) {
       return res.status(200).json({ raw: data })
     }
 
-    const items = data?.data?.data || data?.data || data?.results || (Array.isArray(data) ? data : []) || []
+    const items = data?.data?.data || []
 
     const results = items.map(item => {
-      const formats = item.file || item.media_formats || item.formats || {}
-      const gifUrl =
-        formats.gif?.url || formats.original?.url ||
-        formats.md?.gif?.url || formats.hd?.gif?.url ||
-        item.url
-      const previewUrl =
-        formats.tiny?.url || formats.xs?.gif?.url ||
-        formats.preview?.url || formats.thumbnail?.url ||
-        gifUrl
+      const gifUrl = item.file?.md?.gif?.url || item.file?.hd?.gif?.url || item.file?.sm?.gif?.url
+      const previewUrl = item.file?.xs?.gif?.url || item.file?.sm?.gif?.url || gifUrl
 
       return {
         id: item.id || item.slug || gifUrl,
-        title: item.title || item.alt_text || item.content_description || '',
+        title: item.title || '',
         url: gifUrl,
         previewUrl,
       }

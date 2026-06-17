@@ -1,19 +1,21 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import styles from './CommentComposer.module.css'
 
 const EMPTY_GIF_RESULTS = []
+const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 
-function wrapSelection(textarea, before, after = before) {
+function wrapSelection(textarea, before, after = before, placeholder = '') {
   const { selectionStart, selectionEnd, value } = textarea
   const selected = value.slice(selectionStart, selectionEnd)
+  const content = selected || placeholder
   const newValue =
     value.slice(0, selectionStart) +
-    before + selected + after +
+    before + content + after +
     value.slice(selectionEnd)
   return {
     value: newValue,
     selStart: selectionStart + before.length,
-    selEnd: selectionStart + before.length + selected.length,
+    selEnd: selectionStart + before.length + content.length,
   }
 }
 
@@ -28,17 +30,27 @@ export default function CommentComposer({
 }) {
   const textareaRef = useRef(null)
   const fileInputRef = useRef(null)
+  const gifButtonRef = useRef(null)
+  const gifDebounceRef = useRef(null)
+  const gifRequestIdRef = useRef(0)
   const [attachments, setAttachments] = useState([])
   const [gifPickerOpen, setGifPickerOpen] = useState(false)
   const [gifQuery, setGifQuery] = useState('')
   const [gifResults, setGifResults] = useState(EMPTY_GIF_RESULTS)
   const [gifLoading, setGifLoading] = useState(false)
   const [gifError, setGifError] = useState(null)
+  const [fileError, setFileError] = useState(null)
 
-  function applyFormat(beforeChar, afterChar = beforeChar) {
+  useEffect(() => {
+    return () => {
+      if (gifDebounceRef.current) clearTimeout(gifDebounceRef.current)
+    }
+  }, [])
+
+  function applyFormat(beforeChar, afterChar = beforeChar, placeholder = 'text') {
     const textarea = textareaRef.current
     if (!textarea) return
-    const { value: newValue, selStart, selEnd } = wrapSelection(textarea, beforeChar, afterChar)
+    const { value: newValue, selStart, selEnd } = wrapSelection(textarea, beforeChar, afterChar, placeholder)
     onChange(newValue)
     requestAnimationFrame(() => {
       textarea.focus()
@@ -74,13 +86,29 @@ export default function CommentComposer({
     }
   }
 
+  function formatFileSize(bytes) {
+    if (bytes >= 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)}MB`
+    return `${Math.round(bytes / 1024)}KB`
+  }
+
   function handleImageSelect(e) {
     const files = Array.from(e.target.files || [])
+    const rejected = []
+
     files.forEach(file => {
-      if (!file.type.startsWith('image/')) return
+      if (!file.type.startsWith('image/')) {
+        rejected.push(`"${file.name}" isn't an image file`)
+        return
+      }
+      if (file.size > MAX_FILE_SIZE) {
+        rejected.push(`"${file.name}" is ${formatFileSize(file.size)} — max size is 5MB`)
+        return
+      }
       const url = URL.createObjectURL(file)
       setAttachments(prev => [...prev, { type: 'image', url, name: file.name, id: `img_${Date.now()}_${Math.random()}` }])
     })
+
+    setFileError(rejected.length > 0 ? rejected.join('. ') : null)
     e.target.value = ''
   }
 
@@ -92,42 +120,87 @@ export default function CommentComposer({
     })
   }
 
-  async function searchGifs(query) {
-    setGifQuery(query)
-    if (!query.trim()) {
-      setGifResults(EMPTY_GIF_RESULTS)
-      setGifError(null)
-      return
-    }
+  async function runGifSearch(query) {
+    const requestId = ++gifRequestIdRef.current
     setGifLoading(true)
     setGifError(null)
     try {
       const res = await fetch(`/api/gif-search?q=${encodeURIComponent(query)}`)
       if (!res.ok) throw new Error('Search failed')
       const data = await res.json()
+      if (requestId !== gifRequestIdRef.current) return // a newer search superseded this one
       setGifResults(data.results || [])
       if (!data.results || data.results.length === 0) {
         setGifError(data.message || 'No GIFs found')
       }
     } catch {
+      if (requestId !== gifRequestIdRef.current) return
       setGifError('GIF search is unavailable. Add a KLIPY_API_KEY in your Vercel project settings to enable this.')
       setGifResults(EMPTY_GIF_RESULTS)
     } finally {
+      if (requestId === gifRequestIdRef.current) setGifLoading(false)
+    }
+  }
+
+  function searchGifs(query) {
+    setGifQuery(query)
+
+    if (gifDebounceRef.current) clearTimeout(gifDebounceRef.current)
+
+    if (!query.trim()) {
+      gifRequestIdRef.current++ // invalidate any in-flight request
+      setGifResults(EMPTY_GIF_RESULTS)
+      setGifError(null)
       setGifLoading(false)
+      return
+    }
+
+    gifDebounceRef.current = setTimeout(() => {
+      runGifSearch(query)
+    }, 400)
+  }
+
+  function closeGifPicker() {
+    if (gifDebounceRef.current) clearTimeout(gifDebounceRef.current)
+    gifRequestIdRef.current++ // invalidate any in-flight search
+    setGifPickerOpen(false)
+  }
+
+  function toggleGifPicker() {
+    setGifPickerOpen(open => {
+      const next = !open
+      if (!next) {
+        if (gifDebounceRef.current) clearTimeout(gifDebounceRef.current)
+        gifRequestIdRef.current++ // invalidate any in-flight search
+      }
+      return next
+    })
+  }
+
+  function handleGifSearchKeyDown(e) {
+    if (e.key === 'Escape') {
+      e.preventDefault()
+      closeGifPicker()
+      gifButtonRef.current?.focus()
     }
   }
 
   function selectGif(gif) {
     setAttachments(prev => [...prev, { type: 'gif', url: gif.url, name: gif.title || 'GIF', id: `gif_${Date.now()}_${Math.random()}` }])
-    setGifPickerOpen(false)
+    closeGifPicker()
     setGifQuery('')
     setGifResults(EMPTY_GIF_RESULTS)
   }
 
   function handleSubmit() {
     if (!value.trim() && attachments.length === 0) return
+    if (value.includes('](https://)')) {
+      setFileError('Looks like a link is missing its URL — replace "https://" with the real address before posting.')
+      return
+    }
     onSubmit(attachments)
     setAttachments([])
+    setFileError(null)
   }
 
   const canSubmit = value.trim().length > 0 || attachments.length > 0
@@ -182,9 +255,10 @@ export default function CommentComposer({
           🖼️
         </button>
         <button
+          ref={gifButtonRef}
           type="button"
           className={`${styles.toolBtn} ${gifPickerOpen ? styles.toolBtnActive : ''}`}
-          onClick={() => setGifPickerOpen(o => !o)}
+          onClick={toggleGifPicker}
           aria-label="Add GIF"
           aria-expanded={gifPickerOpen}
           title="Add GIF"
@@ -211,6 +285,7 @@ export default function CommentComposer({
             placeholder="Search for GIFs..."
             value={gifQuery}
             onChange={e => searchGifs(e.target.value)}
+            onKeyDown={handleGifSearchKeyDown}
             autoFocus
           />
           {gifLoading && <div className={styles.gifStatus}>Searching...</div>}
@@ -233,6 +308,12 @@ export default function CommentComposer({
           {!gifLoading && !gifError && gifQuery && gifResults.length === 0 && (
             <div className={styles.gifStatus}>No results yet — keep typing</div>
           )}
+        </div>
+      )}
+
+      {fileError && (
+        <div className={styles.fileErrorBanner} role="alert">
+          {fileError}
         </div>
       )}
 

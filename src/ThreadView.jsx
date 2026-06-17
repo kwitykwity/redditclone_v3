@@ -188,8 +188,8 @@ function Comment({ comment, depth = 0 }) {
 export default function ThreadView() {
   const { postId } = useParams()
   const navigate = useNavigate()
-  const post = POSTS.find(p => p.id === parseInt(postId))
-  const initialComments = COMMENTS[parseInt(postId)] || []
+  const post = POSTS.find(p => String(p.id) === postId)
+  const initialComments = (post ? COMMENTS[post.id] : []) || []
   const flair = post ? (FLAIRS[post.flair] || FLAIRS.INFO) : null
   const [votes, setVotes] = useState(post?.votes || 0)
   const [voted, setVoted] = useState(null)
